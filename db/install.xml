@@ -6,9 +6,9 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
         <FIELD NAME="action" TYPE="char" LENGTH="32" NOTNULL="true"/>
-        <FIELD NAME="recordid" TYPE="int" LENGTH="10" NULL="true"/>
+        <FIELD NAME="recordid" TYPE="int" LENGTH="10" NOTNULL="false"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="ID of the course"/>
-        <FIELD NAME="searchquery" TYPE="text" NULL="true"/>
+        <FIELD NAME="searchquery" TYPE="text" NOTNULL="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"/>
       </FIELDS>
       <KEYS>

@@ -6,7 +6,6 @@ require_once('../../config.php');
 require_login();
 
 // セッションキーチェック (CSRF対策)
-// 注意: JS側で '?sesskey=' . sesskey() をURLにつけるか、POSTデータに含める必要があります
 require_sesskey(); 
 
 // JSON入力の取得
@@ -19,19 +18,35 @@ $action = isset($data['action']) ? clean_param($data['action'], PARAM_ALPHA) : '
 $recordid = isset($data['recordid']) ? clean_param($data['recordid'], PARAM_INT) : 0;
 $searchquery = isset($data['searchquery']) ? clean_param($data['searchquery'], PARAM_TEXT) : '';
 $courseid = isset($data['courseid']) ? clean_param($data['courseid'], PARAM_INT) : 0;
+$cmid        = isset($data['cmid']) ? clean_param($data['cmid'], PARAM_INT) : 0;
+
+if ($courseid > 0) {
+    $course = get_course($courseid);
+    require_course_login($courseid);
+}
 
 // コンテキストの取得（エラー回避）
-try {
-    if ($courseid > 0) {
-        $context = \context_course::instance($courseid);
-    } else {
-        // コースIDがない場合はシステムコンテキストにする（あるいはエラーを返す）
-        $context = \context_system::instance();
+if ($courseid > 0) {
+    try {
+        $course = get_course($courseid);
+    } catch (\Throwable $e) {
+        json_error(400, 'Invalid courseid');
     }
-} catch (Exception $e) {
-    // コンテキスト取得失敗時はシステムコンテキストへフォールバック
+
+    // require_course_loginは $course を渡す
+    require_course_login($course);
+
+    // context_course::instance 例外確認
+    try {
+        $context = \context_course::instance($courseid);
+    } catch (\Throwable $e) {
+        json_error(400, 'Invalid course context');
+    }
+} else {
+    // コースIDがない場合はシステムコンテキスト
     $context = \context_system::instance();
 }
+
 
 $time = time();
 

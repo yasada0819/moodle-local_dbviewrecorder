@@ -18,7 +18,7 @@ $action = isset($data['action']) ? clean_param($data['action'], PARAM_ALPHA) : '
 $recordid = isset($data['recordid']) ? clean_param($data['recordid'], PARAM_INT) : 0;
 $searchquery = isset($data['searchquery']) ? clean_param($data['searchquery'], PARAM_TEXT) : '';
 $courseid = isset($data['courseid']) ? clean_param($data['courseid'], PARAM_INT) : 0;
-$cmid        = isset($data['cmid']) ? clean_param($data['cmid'], PARAM_INT) : 0;
+// $cmid        = isset($data['cmid']) ? clean_param($data['cmid'], PARAM_INT) : 0;
 
 if ($courseid > 0) {
     $course = get_course($courseid);

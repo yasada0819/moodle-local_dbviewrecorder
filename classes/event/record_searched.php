@@ -14,8 +14,8 @@ class record_searched extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'r'; // Read
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        // 検索イベントは特定のレコードに紐づかないため、メインテーブルを指定
-        $this->data['objecttable'] = 'data_records'; 
+        // 検索イベントは特定のエントリではなく、データベース活動に紐づく。
+        $this->data['objecttable'] = 'data';
     }
 
     /**
@@ -30,14 +30,21 @@ class record_searched extends \core\event\base {
      */
     public function get_description() {
         $searchquery = $this->other['searchquery'] ?? '';
-        return "User with id {$this->userid} searched for '{$searchquery}'.";
+        $dataid = $this->other['dataid'] ?? $this->objectid;
+        return "User with id {$this->userid} searched database {$dataid} for '{$searchquery}'.";
     }
 
     /**
      * ログクリック時の遷移先URL
      */
     public function get_url() {
-        return new \moodle_url('/mod/data/view.php');
+        $params = [];
+        if (!empty($this->other['cmid'])) {
+            $params['id'] = $this->other['cmid'];
+        } else if (!empty($this->other['dataid'])) {
+            $params['d'] = $this->other['dataid'];
+        }
+        return new \moodle_url('/mod/data/view.php', $params);
     }
 
     /**

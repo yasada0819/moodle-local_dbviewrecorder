@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const url = new URL(window.location.href);
     
     // パラメータ取得
+    const cmid = url.searchParams.get('id');
+    const dataid = url.searchParams.get('d');
     const rid = url.searchParams.get('rid');
     const search = url.searchParams.get('search');
 
@@ -41,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // データが揃っていれば送信
-    if (action && courseId) {
+    if (action && (courseId || cmid || dataid)) {
         fetch(M.cfg.wwwroot + '/local/dbviewrecorder/logrecord.php?sesskey=' + M.cfg.sesskey, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -49,7 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 action: action,
                 recordid: payload.recordid,
                 searchquery: payload.searchquery,
-                courseid: courseId
+                courseid: courseId,
+                cmid: cmid,
+                dataid: dataid
             })
         })
         .then(response => {

@@ -14,7 +14,7 @@ class record_viewed extends \core\event\base {
     protected function init() {
         $this->data['crud'] = 'r'; // Read (読み取り)
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'data_records'; 
+        $this->data['objecttable'] = 'data_records';
     }
 
     /**
@@ -29,14 +29,21 @@ class record_viewed extends \core\event\base {
      */
     public function get_description() {
         $recordid = $this->objectid;
-        return "User with id {$this->userid} viewed record {$recordid}.";
+        $dataid = $this->other['dataid'] ?? 0;
+        return "User with id {$this->userid} viewed record {$recordid} in database {$dataid}.";
     }
 
     /**
      * ログクリック時の遷移先URL
      */
     public function get_url() {
-        return new \moodle_url('/mod/data/view.php', ['rid' => $this->objectid]);
+        $params = ['rid' => $this->objectid];
+        if (!empty($this->other['cmid'])) {
+            $params['id'] = $this->other['cmid'];
+        } else if (!empty($this->other['dataid'])) {
+            $params['d'] = $this->other['dataid'];
+        }
+        return new \moodle_url('/mod/data/view.php', $params);
     }
 
     /**
